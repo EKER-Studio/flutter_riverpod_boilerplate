@@ -13,7 +13,7 @@ class App extends ConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider).value;
 
     return MaterialApp(
-      title: 'Todo App',
+      title: 'Flutter Riverpod Boilerplate',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
