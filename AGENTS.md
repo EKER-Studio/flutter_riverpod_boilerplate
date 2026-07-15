@@ -14,6 +14,38 @@ For every public class/method, add a doc comment following the language's standa
 - NO code examples unless the logic is genuinely non-obvious.
 - Do not document trivial getters/setters or self-explanatory boilerplate.
 
+### Scope Discipline
+- Only read, open, or modify files explicitly named in the task, or files directly imported/referenced by them.
+- Do NOT explore or edit files outside the stated scope without first asking for confirmation.
+- If the task seems to require touching files beyond the stated scope, STOP and report which additional files you believe are needed, and why — before making changes.
+
+### Ambiguity Handling
+- If a requirement is ambiguous or underspecified, state your interpretation/assumption explicitly before proceeding, rather than silently guessing.
+- Prefer asking one direct clarifying question over implementing multiple speculative variants.
+
+### Dependency Changes
+- Do NOT add, remove, or upgrade a dependency without explicitly flagging it in your response (name, version, reason).
+- Never introduce a new dependency to solve a problem that can be reasonably solved with existing project dependencies or stdlib.
+
+### Git & Version Control
+- Do NOT commit automatically unless explicitly instructed — some tools default to auto-commit, this project does not.
+- If committing is requested, write descriptive, atomic commit messages (what changed and why, not just "fix").
+- NEVER force-push, rewrite shared history, or delete branches without explicit confirmation.
+
+### Security
+- NEVER hardcode API keys, tokens, passwords, or other secrets in source code.
+- NEVER commit `.env` files or other files containing local secrets.
+- Use environment variables / the platform's secure storage mechanism for anything sensitive.
+
+### Verification Honesty
+- NEVER report that a verification step (build, analyze, lint, test) passed unless you actually executed it in this session and observed the output.
+- If a step cannot be run (e.g. missing tool, sandboxed environment limitation), say so explicitly instead of assuming or claiming success.
+- Do not fabricate or paraphrase tool output — quote or summarize only what was actually returned.
+
+### Debug Artifact Cleanup
+- Remove debug print/log statements and commented-out code introduced during iteration before considering a task complete, unless explicitly asked to leave them for further debugging.
+- Do not leave stray TODO comments describing unfinished work without flagging them explicitly in your final summary.
+
 ### Guardrails
 - NEVER delete, skip, or weaken a test to make the verification pipeline pass. Fix the underlying code instead.
 - NEVER add lint-suppression comments (e.g. `// ignore:`) or disable analyzer/linter rules to silence errors, unless explicitly instructed.
@@ -33,20 +65,26 @@ For every public class/method, add a doc comment following the language's standa
 - Run build runner: `dart run build_runner build --delete-conflicting-outputs`
 - Watch build runner: `dart run build_runner watch --delete-conflicting-outputs`
 - Code analysis: `flutter analyze`
-- Lint (Riverpod-specific): `dart run custom_lint` *(remove this line once confirmed redundant with `flutter analyze` in this project's `analysis_options.yaml`)*
+- Lint (Riverpod-specific): `dart run custom_lint`
 - Run tests: `flutter test`
 
 ### Architecture & State Management
 This is a Local-First, AI-Native boilerplate utilizing Clean Architecture under a Feature-First approach.
 - **State Management:** Riverpod 3.x strictly.
-- **Data Flow:** UI (`ConsumerWidget`) -> Notifier (`@riverpod`) -> Repository Interface (`domain`) -> Repository Impl (`data`) -> Local DB (`isar_community`).
+- **Data Flow:** UI (`ConsumerWidget`) -> Notifier (`@riverpod`) -> Repository Interface (`domain`) -> Repository Impl (`data`) -> Local DB (`isar`).
 - **Reactivity:** Handled purely via Isar streams. Notifiers listen to Isar collections and pipe data directly into `AsyncValue` state.
+
+### Lifecycle & Resource Disposal Checklist
+Before considering any feature involving streams, timers, or animations complete, verify:
+- Every `StreamSubscription` is cancelled in `dispose()` or the corresponding Notifier's `ref.onDispose()`.
+- Every `Timer` or `AnimationController` is cancelled/disposed the same way to prevent memory leaks.
+- All Isar dynamic query streams are properly closed or managed via Riverpod's auto-dispose mechanism.
 
 ### Mandatory Verification Pipeline
 After any modification within the `lib/**` directory, you MUST execute the following pipeline in strict order:
 1. `dart run build_runner build --delete-conflicting-outputs`
 2. `flutter analyze`
-3. `dart run custom_lint` *(see note above — drop if redundant)*
+3. `dart run custom_lint`
 4. `flutter test`
 
-A task is NOT considered complete until all steps pass with zero errors and zero failing tests. Fix any arising issues autonomously, subject to the Guardrails above.
+A task is NOT considered complete until all steps pass with zero errors and zero failing tests, AND the Lifecycle & Resource Disposal Checklist above has been explicitly verified. Fix any arising issues autonomously, subject to the Guardrails above.

@@ -4,6 +4,7 @@ import 'category_model.dart';
 
 part 'todo_model.g.dart';
 
+/// Persistent representation of a [Todo] domain entity.
 @collection
 class TodoModel {
   Id id = Isar.autoIncrement;
@@ -14,6 +15,5 @@ class TodoModel {
 
   late DateTime createdAt;
 
-  /// Optional link to a category. Load with `await category.load()` before reading `.value`.
   final category = IsarLink<CategoryModel>();
 }

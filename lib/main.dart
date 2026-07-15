@@ -9,6 +9,7 @@ import 'features/settings/data/models/user_preferences_model.dart';
 import 'features/todos/data/models/category_model.dart';
 import 'features/todos/data/models/todo_model.dart';
 
+/// Initializes Isar and launches the app with injected dependencies.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

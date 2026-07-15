@@ -5,15 +5,12 @@ import '../../domain/repositories/todo_repository.dart';
 import '../mappers/todo_mapper.dart';
 import '../models/todo_model.dart';
 
+/// Default implementation of [TodoRepository] backed by Isar.
 class TodoRepositoryImpl implements TodoRepository {
   TodoRepositoryImpl(this._isar);
 
   final Isar _isar;
 
-  /// Loads the [IsarLink] relation on [model] and converts it to a domain [Todo].
-  ///
-  /// This is the single place where the "load before map" contract is satisfied.
-  /// All read paths go through this helper so the mapper remains free of I/O.
   Future<Todo> _loadAndMap(TodoModel model) async {
     await model.category.load();
     return model.toEntity();
@@ -25,9 +22,6 @@ class TodoRepositoryImpl implements TodoRepository {
         .where()
         .sortByCreatedAtDesc()
         .watch(fireImmediately: true)
-        // asyncMap is required here: unlike map(), it awaits the Future returned
-        // by _loadAndMap before emitting the next value, so the stream always
-        // carries fully-hydrated domain entities.
         .asyncMap((models) => Future.wait(models.map(_loadAndMap)));
   }
 
@@ -46,7 +40,6 @@ class TodoRepositoryImpl implements TodoRepository {
         .where()
         .sortByCreatedAtDesc()
         .findAll();
-    // Load all links in parallel for efficiency.
     return Future.wait(models.map(_loadAndMap));
   }
 
