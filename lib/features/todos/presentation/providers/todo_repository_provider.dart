@@ -6,6 +6,7 @@ import '../../domain/repositories/todo_repository.dart';
 
 part 'todo_repository_provider.g.dart';
 
+/// Provider for the [TodoRepository].
 @Riverpod(keepAlive: true)
 TodoRepository todoRepository(Ref ref) {
   return TodoRepositoryImpl(ref.watch(isarProvider));

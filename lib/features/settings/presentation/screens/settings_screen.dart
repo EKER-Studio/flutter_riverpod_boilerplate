@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/user_preferences.dart';
 import '../providers/user_preferences_notifier.dart';
 
+/// Screen displaying user settings and preferences.
 class SettingsScreen extends ConsumerWidget {
+  /// Creates a [SettingsScreen].
   const SettingsScreen({super.key});
 
   @override

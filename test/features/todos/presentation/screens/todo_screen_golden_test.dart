@@ -11,7 +11,7 @@ import 'package:flutter_riverpod_boilerplate/features/todos/domain/entities/todo
 import 'package:flutter_riverpod_boilerplate/features/todos/domain/repositories/todo_repository.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/presentation/providers/todo_repository_provider.dart';
 
-// Używamy FakeTodoRepository, podobnie jak w widget testach, by wstrzyknąć stałe dane.
+// Use FakeTodoRepository, similar to widget tests, to inject constant data.
 class FakeTodoRepository implements TodoRepository {
   final List<Todo> _todos = [];
   final _streamController = StreamController<List<Todo>>.broadcast();
@@ -59,7 +59,7 @@ class FakeTodoRepository implements TodoRepository {
           1,
           10,
           0,
-        ), // Zamrożona data, aby Golden Test był deterministyczny
+        ), // Frozen clock to ensure deterministic golden tests
       ),
     );
     _emit();
@@ -111,11 +111,11 @@ void main() {
 
   group('Todo Screen Golden Tests', () {
     testWidgets('Initial empty state', (tester) async {
-      // 1. Zamrożenie wymiarów ekranu (np. klasyczny profil telefonu, 1080x2400)
+      // 1. Freeze device dimensions (e.g., standard phone profile, 1080x2400)
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 3.0;
 
-      // 2. Budowanie widgetu ze wstrzykniętym fake repo
+      // 2. Build widget with injected fake repository
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -128,16 +128,16 @@ void main() {
         ),
       );
 
-      // 3. Oczekiwanie na ustabilizowanie się klatek (wszystkie ładowania zakończone)
+      // 3. Wait for all frames to settle (all loading finished)
       await tester.pumpAndSettle();
 
-      // 4. Porównanie wyrenderowanego piksela do pliku referencyjnego
+      // 4. Compare rendered pixels against the reference file
       await expectLater(
         find.byType(App),
         matchesGoldenFile('goldens/todo_screen_empty.png'),
       );
 
-      // Sprzątanie po teście
+      // Cleanup after test
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
@@ -146,7 +146,7 @@ void main() {
       tester.view.physicalSize = const Size(1080, 2400);
       tester.view.devicePixelRatio = 3.0;
 
-      // Dodanie deterministycznego zadania
+      // Add deterministic tasks
       await repository.add(title: 'Napisz dokumentację');
       await repository.add(title: 'Przetestuj aplikację');
 

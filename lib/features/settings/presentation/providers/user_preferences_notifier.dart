@@ -7,6 +7,7 @@ import 'user_preferences_repository_provider.dart';
 
 part 'user_preferences_notifier.g.dart';
 
+/// Notifier for managing user preferences state.
 @riverpod
 class UserPreferencesNotifier extends _$UserPreferencesNotifier {
   @override
@@ -15,12 +16,14 @@ class UserPreferencesNotifier extends _$UserPreferencesNotifier {
     return repository.watch();
   }
 
+  /// Updates the user's selected theme mode.
   Future<void> updateThemeMode(UserThemeMode themeMode) async {
     await ref
         .read(userPreferencesRepositoryProvider)
         .updateThemeMode(themeMode);
   }
 
+  /// Updates the user's notification preferences.
   Future<void> updateNotificationsEnabled(bool isEnabled) async {
     await ref
         .read(userPreferencesRepositoryProvider)

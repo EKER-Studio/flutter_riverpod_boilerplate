@@ -6,7 +6,9 @@ import '../providers/todo_notifier.dart';
 import '../widgets/add_todo_fab.dart';
 import '../widgets/todo_list_item.dart';
 
+/// Screen displaying the list of todo items.
 class TodoScreen extends ConsumerWidget {
+  /// Creates a [TodoScreen].
   const TodoScreen({super.key});
 
   @override

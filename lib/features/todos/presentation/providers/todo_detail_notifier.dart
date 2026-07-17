@@ -7,6 +7,7 @@ import 'todo_repository_provider.dart';
 
 part 'todo_detail_notifier.g.dart';
 
+/// Notifier for managing the state of a single todo item.
 @riverpod
 class TodoDetail extends _$TodoDetail {
   @override

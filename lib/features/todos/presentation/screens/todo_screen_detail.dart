@@ -4,9 +4,12 @@ import 'package:intl/intl.dart';
 
 import '../providers/todo_detail_notifier.dart';
 
+/// Screen displaying the details of a single todo item.
 class TodoDetailScreen extends ConsumerWidget {
+  /// Creates a [TodoDetailScreen].
   const TodoDetailScreen({super.key, required this.todoId});
 
+  /// The ID of the todo item to display.
   final int todoId;
 
   @override

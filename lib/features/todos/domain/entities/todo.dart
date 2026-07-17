@@ -1,5 +1,7 @@
 /// Domain entity representing a single todo item.
+/// Domain entity representing a todo item.
 class Todo {
+  /// Creates a [Todo] instance.
   const Todo({
     required this.id,
     required this.title,
@@ -7,11 +9,19 @@ class Todo {
     required this.createdAt,
   });
 
+  /// The unique identifier of the todo.
   final int id;
+
+  /// The title of the todo.
   final String title;
+
+  /// Whether the todo is completed.
   final bool isCompleted;
+
+  /// The date and time when the todo was created.
   final DateTime createdAt;
 
+  /// Creates a copy of this object with the given fields replaced with the new values.
   Todo copyWith({
     int? id,
     String? title,

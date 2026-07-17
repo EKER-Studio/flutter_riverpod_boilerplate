@@ -6,7 +6,9 @@ import '../mappers/todo_mapper.dart';
 import '../models/todo_model.dart';
 
 /// Default implementation of [TodoRepository] backed by Isar.
+/// Implementation of [TodoRepository] using Isar.
 class TodoRepositoryImpl implements TodoRepository {
+  /// Creates a new [TodoRepositoryImpl] with the given Isar instance.
   TodoRepositoryImpl(this._isar);
 
   final Isar _isar;

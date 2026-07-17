@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/todo.dart';
 import '../screens/todo_screen_detail.dart';
 
+/// List item widget displaying a todo item.
 class TodoListItem extends StatelessWidget {
+  /// Creates a [TodoListItem].
   const TodoListItem({
     super.key,
     required this.todo,
@@ -11,8 +13,13 @@ class TodoListItem extends StatelessWidget {
     required this.onDelete,
   });
 
+  /// The todo item to display.
   final Todo todo;
+
+  /// Callback to execute when the todo is toggled.
   final VoidCallback onToggle;
+
+  /// Callback to execute when the todo is deleted.
   final VoidCallback onDelete;
 
   @override

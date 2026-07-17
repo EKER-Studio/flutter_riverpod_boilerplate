@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+/// Floating action button for adding a new todo item.
 class AddTodoFab extends StatelessWidget {
+  /// Creates an [AddTodoFab].
   const AddTodoFab({super.key, required this.onAdd});
 
+  /// Callback to execute when a new todo is added.
   final Future<void> Function(String title) onAdd;
 
   Future<void> _showAddDialog(BuildContext context) async {
