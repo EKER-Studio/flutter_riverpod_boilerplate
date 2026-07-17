@@ -142,4 +142,32 @@ void main() {
     expect(find.text('Kup mleko'), findsOneWidget);
     expect(find.text('Brak zadań'), findsNothing);
   });
+
+  testWidgets('Navigates to TodoDetailScreen when a task is tapped', (
+    tester,
+  ) async {
+    await repository.add(title: 'Zadanie testowe');
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          todoRepositoryProvider.overrideWithValue(repository),
+          userPreferencesRepositoryProvider.overrideWithValue(
+            userPreferencesRepository,
+          ),
+        ],
+        child: const App(),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Tap on the task
+    await tester.tap(find.text('Zadanie testowe'));
+    await tester.pumpAndSettle();
+
+    // Verify that we are on the details screen
+    expect(find.text('Szczegóły zadania'), findsOneWidget);
+    expect(find.text('Status'), findsOneWidget);
+  });
 }
