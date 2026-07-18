@@ -1,5 +1,4 @@
 /// Domain entity representing a single todo item.
-/// Domain entity representing a todo item.
 class Todo {
   /// Creates a [Todo] instance.
   const Todo({
