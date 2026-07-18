@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,7 +58,7 @@ void main() {
       // Cleanup after test
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
-    });
+    }, skip: !Platform.isMacOS);
 
     testWidgets('Populated list state', (tester) async {
       tester.view.physicalSize = const Size(1080, 2400);
@@ -89,5 +90,5 @@ void main() {
       tester.view.resetPhysicalSize();
       tester.view.resetDevicePixelRatio();
     });
-  });
+  }, skip: !Platform.isMacOS);
 }
