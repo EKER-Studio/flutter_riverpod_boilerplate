@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  verification:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,28 +17,22 @@ jobs:
       - name: Install Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: stable
-
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            ${{ env.FLUTTER_ROOT }}/.pub-cache
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
+          channel: 'stable'
+          cache: true # Built-in cache mechanism inside flutter-action (faster and more stable)
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run code generation
+      - name: Generate localization files (i18n)
+        run: flutter gen-l10n
+
+      - name: Run code generation (Build Runner)
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Check formatting
@@ -47,5 +41,5 @@ jobs:
       - name: Static analysis
         run: flutter analyze
 
-      - name: Run tests
-        run: flutter test --exclude-tags=golden
+      - name: Run unit and widget tests
+        run: flutter test --exclude-tags golden

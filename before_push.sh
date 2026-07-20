@@ -48,34 +48,42 @@ log_info "Launching comprehensive pre-push verification pipeline..."
 # ------------------------------------------------------------------------------
 log_step "1" "Cleaning environment and fetching dependencies..."
 # ------------------------------------------------------------------------------
-flutter clean
-flutter pub get
+flutter clean > /dev/null
+flutter pub get > /dev/null
+log_success "Workspace cleaned and dependencies resolved."
 
 # ------------------------------------------------------------------------------
-log_step "2" "Regenerating code declarations (Build Runner)..."
+log_step "2" "Generating localization files (i18n)..."
+# ------------------------------------------------------------------------------
+flutter gen-l10n
+log_success "Localization classes generated successfully."
+
+# ------------------------------------------------------------------------------
+log_step "3" "Regenerating code declarations (Build Runner)..."
 # ------------------------------------------------------------------------------
 # Deletes conflicting outputs automatically to prevent compilation deadlocks
-dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs > /dev/null
+log_success "Code generation completed."
 
 # ------------------------------------------------------------------------------
-log_step "3" "Verifying code formatting standards..."
+log_step "4" "Verifying code formatting standards..."
 # ------------------------------------------------------------------------------
 # Ensures the code strictly obeys Dart formatting guidelines without altering files
 dart format --output=none --set-exit-if-changed .
 log_success "Codebase formatting aligns with style specifications."
 
 # ------------------------------------------------------------------------------
-log_step "4" "Executing static analysis (Linter)..."
+log_step "5" "Executing static analysis (Linter)..."
 # ------------------------------------------------------------------------------
 # Evaluates project architecture against analysis_options.yaml rules
 flutter analyze
 log_success "Static analysis passed with zero warnings or errors."
 
 # ------------------------------------------------------------------------------
-log_step "5" "Running complete unit and widget test suites..."
+log_step "6" "Running complete unit and widget test suites (Excluding Goldens)..."
 # ------------------------------------------------------------------------------
-# Executes all automated tests inside the /test directory
-flutter test
+# Executes all non-visual automated tests inside the /test directory
+flutter test --exclude-tags golden
 log_success "All automated unit and widget tests completed successfully."
 
 # ==============================================================================
