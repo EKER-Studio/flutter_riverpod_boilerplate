@@ -60,15 +60,20 @@ class TodoRepositoryImpl implements TodoRepository {
     required int id,
   }) async {
     try {
+      var found = false;
       await _isar.writeTxn(() async {
         final model = await _isar.todoModels.get(id);
         if (model == null) {
           return;
         }
 
+        found = true;
         model.isCompleted = !model.isCompleted;
         await _isar.todoModels.put(model);
       });
+      if (!found) {
+        return (false, 'Todo not found');
+      }
       return (true, null);
     } catch (e) {
       return (false, e.toString());
