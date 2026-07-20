@@ -8,12 +8,15 @@ part of 'user_preferences_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Notifier for managing user preferences state.
 
 @ProviderFor(UserPreferencesNotifier)
 final userPreferencesProvider = UserPreferencesNotifierProvider._();
 
+/// Notifier for managing user preferences state.
 final class UserPreferencesNotifierProvider
     extends $StreamNotifierProvider<UserPreferencesNotifier, UserPreferences> {
+  /// Notifier for managing user preferences state.
   UserPreferencesNotifierProvider._()
     : super(
         from: null,
@@ -34,7 +37,9 @@ final class UserPreferencesNotifierProvider
 }
 
 String _$userPreferencesNotifierHash() =>
-    r'12ca678e954049856a7c1415492e8b17fa7df0f2';
+    r'2d70fa08f6b7bd66c5d0841adbf25594fdec3976';
+
+/// Notifier for managing user preferences state.
 
 abstract class _$UserPreferencesNotifier
     extends $StreamNotifier<UserPreferences> {

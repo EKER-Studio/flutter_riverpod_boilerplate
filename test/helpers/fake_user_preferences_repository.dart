@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod_boilerplate/core/errors/failure.dart';
 import 'package:flutter_riverpod_boilerplate/features/settings/domain/entities/user_preferences.dart';
 import 'package:flutter_riverpod_boilerplate/features/settings/domain/repositories/user_preferences_repository.dart';
 
@@ -39,7 +40,7 @@ class FakeUserPreferencesRepository implements UserPreferencesRepository {
   }
 
   @override
-  Future<(bool success, String? errorMessage)> updateThemeMode(
+  Future<(bool success, Failure? failure)> updateThemeMode(
     UserThemeMode themeMode,
   ) async {
     _preferences = _preferences.copyWith(themeMode: themeMode);
@@ -48,7 +49,7 @@ class FakeUserPreferencesRepository implements UserPreferencesRepository {
   }
 
   @override
-  Future<(bool success, String? errorMessage)> updateNotificationsEnabled(
+  Future<(bool success, Failure? failure)> updateNotificationsEnabled(
     bool isEnabled,
   ) async {
     _preferences = _preferences.copyWith(isNotificationsEnabled: isEnabled);

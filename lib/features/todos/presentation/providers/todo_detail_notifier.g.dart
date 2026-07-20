@@ -8,12 +8,15 @@ part of 'todo_detail_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Notifier for managing the state of a single todo item.
 
 @ProviderFor(TodoDetail)
 final todoDetailProvider = TodoDetailFamily._();
 
+/// Notifier for managing the state of a single todo item.
 final class TodoDetailProvider
     extends $StreamNotifierProvider<TodoDetail, Todo?> {
+  /// Notifier for managing the state of a single todo item.
   TodoDetailProvider._({
     required TodoDetailFamily super.from,
     required int super.argument,
@@ -52,6 +55,8 @@ final class TodoDetailProvider
 
 String _$todoDetailHash() => r'b31202548e5c4b10f5c7a59c98f7ea91a1c09b16';
 
+/// Notifier for managing the state of a single todo item.
+
 final class TodoDetailFamily extends $Family
     with
         $ClassFamilyOverride<
@@ -70,12 +75,16 @@ final class TodoDetailFamily extends $Family
         isAutoDispose: true,
       );
 
+  /// Notifier for managing the state of a single todo item.
+
   TodoDetailProvider call(int id) =>
       TodoDetailProvider._(argument: id, from: this);
 
   @override
   String toString() => r'todoDetailProvider';
 }
+
+/// Notifier for managing the state of a single todo item.
 
 abstract class _$TodoDetail extends $StreamNotifier<Todo?> {
   late final _$args = ref.$arg as int;

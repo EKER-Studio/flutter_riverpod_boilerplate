@@ -8,12 +8,15 @@ part of 'todo_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Notifier for managing the list of todo items.
 
 @ProviderFor(TodoList)
 final todoListProvider = TodoListProvider._();
 
+/// Notifier for managing the list of todo items.
 final class TodoListProvider
     extends $StreamNotifierProvider<TodoList, List<Todo>> {
+  /// Notifier for managing the list of todo items.
   TodoListProvider._()
     : super(
         from: null,
@@ -33,7 +36,9 @@ final class TodoListProvider
   TodoList create() => TodoList();
 }
 
-String _$todoListHash() => r'08dfb21aafd542848aba1ce76b0308dece3660be';
+String _$todoListHash() => r'5c41c164eb731bafa8452cc57cf9c87e4444a1ef';
+
+/// Notifier for managing the list of todo items.
 
 abstract class _$TodoList extends $StreamNotifier<List<Todo>> {
   Stream<List<Todo>> build();

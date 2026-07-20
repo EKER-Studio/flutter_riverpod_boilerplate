@@ -1,5 +1,6 @@
 import 'package:isar_community/isar.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/user_preferences.dart';
 import '../../domain/repositories/user_preferences_repository.dart';
 import '../mappers/user_preferences_mapper.dart';
@@ -34,19 +35,28 @@ class UserPreferencesRepositoryImpl implements UserPreferencesRepository {
   Stream<UserPreferences> watch() {
     return _isar.userPreferencesModels
         .watchObject(userPreferencesSingletonId, fireImmediately: true)
-        .map(_mapOrDefault);
+        .map(_mapOrDefault)
+        .handleError((Object error, StackTrace stack) {
+          throw DatabaseFailure(
+            'Failed to watch preferences: ${error.toString()}',
+          );
+        });
   }
 
   @override
   Future<UserPreferences> get() async {
-    final model = await _isar.userPreferencesModels.get(
-      userPreferencesSingletonId,
-    );
-    return _mapOrDefault(model);
+    try {
+      final model = await _isar.userPreferencesModels.get(
+        userPreferencesSingletonId,
+      );
+      return _mapOrDefault(model);
+    } catch (e) {
+      throw DatabaseFailure('Failed to load preferences: ${e.toString()}');
+    }
   }
 
   @override
-  Future<(bool success, String? errorMessage)> updateThemeMode(
+  Future<(bool success, Failure? failure)> updateThemeMode(
     UserThemeMode themeMode,
   ) async {
     try {
@@ -56,13 +66,15 @@ class UserPreferencesRepositoryImpl implements UserPreferencesRepository {
         await _isar.userPreferencesModels.put(model);
       });
       return (true, null);
+    } on IsarError catch (e) {
+      return (false, DatabaseFailure(e.message));
     } catch (e) {
-      return (false, e.toString());
+      return (false, DatabaseFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
   @override
-  Future<(bool success, String? errorMessage)> updateNotificationsEnabled(
+  Future<(bool success, Failure? failure)> updateNotificationsEnabled(
     bool isEnabled,
   ) async {
     try {
@@ -72,8 +84,10 @@ class UserPreferencesRepositoryImpl implements UserPreferencesRepository {
         await _isar.userPreferencesModels.put(model);
       });
       return (true, null);
+    } on IsarError catch (e) {
+      return (false, DatabaseFailure(e.message));
     } catch (e) {
-      return (false, e.toString());
+      return (false, DatabaseFailure('Unexpected error: ${e.toString()}'));
     }
   }
 }

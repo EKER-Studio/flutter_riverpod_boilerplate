@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:flutter_riverpod_boilerplate/core/errors/failure.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/domain/entities/todo.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/domain/repositories/todo_repository.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/presentation/providers/todo_detail_notifier.dart';
@@ -159,12 +160,12 @@ void main() {
       container.listen(todoListProvider, (_, _) {});
       await container.read(todoListProvider.future);
 
-      final (success, error) = await container
+      final (success, failure) = await container
           .read(todoListProvider.notifier)
           .addTodo('  New task  ');
 
       expect(success, isTrue);
-      expect(error, isNull);
+      expect(failure, isNull);
       verify(() => mockRepo.add(title: 'New task')).called(1);
     });
 
@@ -176,13 +177,15 @@ void main() {
         await container.read(todoListProvider.future);
         final notifier = container.read(todoListProvider.notifier);
 
-        final (success1, error1) = await notifier.addTodo('');
+        final (success1, failure1) = await notifier.addTodo('');
         expect(success1, isFalse);
-        expect(error1, 'Title cannot be empty');
+        expect(failure1, isA<ValidationFailure>());
+        expect(failure1?.message, 'Title cannot be empty');
 
-        final (success2, error2) = await notifier.addTodo('   ');
+        final (success2, failure2) = await notifier.addTodo('   ');
         expect(success2, isFalse);
-        expect(error2, 'Title cannot be empty');
+        expect(failure2, isA<ValidationFailure>());
+        expect(failure2?.message, 'Title cannot be empty');
 
         verifyNever(() => mockRepo.add(title: any(named: 'title')));
       },
@@ -193,18 +196,19 @@ void main() {
       () async {
         when(
           () => mockRepo.add(title: any(named: 'title')),
-        ).thenAnswer((_) async => (false, 'Database error'));
+        ).thenAnswer((_) async => (false, DatabaseFailure('Database error')));
 
         container = _makeContainer(mockRepo);
         container.listen(todoListProvider, (_, _) {});
         await container.read(todoListProvider.future);
 
-        final (success, error) = await container
+        final (success, failure) = await container
             .read(todoListProvider.notifier)
             .addTodo('New task');
 
         expect(success, isFalse);
-        expect(error, 'Database error');
+        expect(failure, isA<DatabaseFailure>());
+        expect(failure?.message, 'Database error');
         expect(container.read(todoListProvider), isA<AsyncData<List<Todo>>>());
       },
     );
@@ -223,12 +227,12 @@ void main() {
       container.listen(todoListProvider, (_, _) {});
       await container.read(todoListProvider.future);
 
-      final (success, error) = await container
+      final (success, failure) = await container
           .read(todoListProvider.notifier)
           .toggleTodo(_tId);
 
       expect(success, isTrue);
-      expect(error, isNull);
+      expect(failure, isNull);
       verify(() => mockRepo.toggleCompleted(id: _tId)).called(1);
     });
 
@@ -237,18 +241,19 @@ void main() {
       () async {
         when(
           () => mockRepo.toggleCompleted(id: any(named: 'id')),
-        ).thenAnswer((_) async => (false, 'Database error'));
+        ).thenAnswer((_) async => (false, DatabaseFailure('Database error')));
 
         container = _makeContainer(mockRepo);
         container.listen(todoListProvider, (_, _) {});
         await container.read(todoListProvider.future);
 
-        final (success, error) = await container
+        final (success, failure) = await container
             .read(todoListProvider.notifier)
             .toggleTodo(_tId);
 
         expect(success, isFalse);
-        expect(error, 'Database error');
+        expect(failure, isA<DatabaseFailure>());
+        expect(failure?.message, 'Database error');
         expect(container.read(todoListProvider), isA<AsyncData<List<Todo>>>());
       },
     );
@@ -267,12 +272,12 @@ void main() {
       container.listen(todoListProvider, (_, _) {});
       await container.read(todoListProvider.future);
 
-      final (success, error) = await container
+      final (success, failure) = await container
           .read(todoListProvider.notifier)
           .deleteTodo(_tId);
 
       expect(success, isTrue);
-      expect(error, isNull);
+      expect(failure, isNull);
       verify(() => mockRepo.delete(id: _tId)).called(1);
     });
 
@@ -281,18 +286,19 @@ void main() {
       () async {
         when(
           () => mockRepo.delete(id: any(named: 'id')),
-        ).thenAnswer((_) async => (false, 'Database error'));
+        ).thenAnswer((_) async => (false, DatabaseFailure('Database error')));
 
         container = _makeContainer(mockRepo);
         container.listen(todoListProvider, (_, _) {});
         await container.read(todoListProvider.future);
 
-        final (success, error) = await container
+        final (success, failure) = await container
             .read(todoListProvider.notifier)
             .deleteTodo(_tId);
 
         expect(success, isFalse);
-        expect(error, 'Database error');
+        expect(failure, isA<DatabaseFailure>());
+        expect(failure?.message, 'Database error');
         expect(container.read(todoListProvider), isA<AsyncData<List<Todo>>>());
       },
     );

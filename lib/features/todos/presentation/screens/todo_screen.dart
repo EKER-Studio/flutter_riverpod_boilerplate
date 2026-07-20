@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../providers/todo_notifier.dart';
 import '../widgets/add_todo_fab.dart';
@@ -45,7 +46,7 @@ class TodoScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  error.toString(),
+                  error is Failure ? error.message : error.toString(),
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -95,22 +96,30 @@ class TodoScreen extends ConsumerWidget {
               return TodoListItem(
                 todo: todo,
                 onToggle: () async {
-                  final (success, error) = await ref
+                  final (success, failure) = await ref
                       .read(todoListProvider.notifier)
                       .toggleTodo(todo.id);
                   if (!success && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(error ?? 'Failed to toggle task')),
+                      SnackBar(
+                        content: Text(
+                          failure?.message ?? 'Failed to toggle task',
+                        ),
+                      ),
                     );
                   }
                 },
                 onDelete: () async {
-                  final (success, error) = await ref
+                  final (success, failure) = await ref
                       .read(todoListProvider.notifier)
                       .deleteTodo(todo.id);
                   if (!success && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(error ?? 'Failed to delete task')),
+                      SnackBar(
+                        content: Text(
+                          failure?.message ?? 'Failed to delete task',
+                        ),
+                      ),
                     );
                   }
                 },
@@ -121,12 +130,12 @@ class TodoScreen extends ConsumerWidget {
       ),
       floatingActionButton: AddTodoFab(
         onAdd: (title) async {
-          final (success, error) = await ref
+          final (success, failure) = await ref
               .read(todoListProvider.notifier)
               .addTodo(title);
           if (!success && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(error ?? 'Failed to add task')),
+              SnackBar(content: Text(failure?.message ?? 'Failed to add task')),
             );
           }
         },

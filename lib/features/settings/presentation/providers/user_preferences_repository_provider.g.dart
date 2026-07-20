@@ -8,9 +8,12 @@ part of 'user_preferences_repository_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Provider for the [UserPreferencesRepository].
 
 @ProviderFor(userPreferencesRepository)
 final userPreferencesRepositoryProvider = UserPreferencesRepositoryProvider._();
+
+/// Provider for the [UserPreferencesRepository].
 
 final class UserPreferencesRepositoryProvider
     extends
@@ -20,6 +23,7 @@ final class UserPreferencesRepositoryProvider
           UserPreferencesRepository
         >
     with $Provider<UserPreferencesRepository> {
+  /// Provider for the [UserPreferencesRepository].
   UserPreferencesRepositoryProvider._()
     : super(
         from: null,

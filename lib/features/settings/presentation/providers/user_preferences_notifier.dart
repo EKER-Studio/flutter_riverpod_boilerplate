@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/user_preferences.dart';
 import 'user_preferences_repository_provider.dart';
 
@@ -17,7 +18,7 @@ class UserPreferencesNotifier extends _$UserPreferencesNotifier {
   }
 
   /// Updates the user's selected theme mode.
-  Future<(bool success, String? errorMessage)> updateThemeMode(
+  Future<(bool success, Failure? failure)> updateThemeMode(
     UserThemeMode themeMode,
   ) async {
     return await ref
@@ -26,7 +27,7 @@ class UserPreferencesNotifier extends _$UserPreferencesNotifier {
   }
 
   /// Updates the user's notification preferences.
-  Future<(bool success, String? errorMessage)> updateNotificationsEnabled(
+  Future<(bool success, Failure? failure)> updateNotificationsEnabled(
     bool isEnabled,
   ) async {
     return await ref

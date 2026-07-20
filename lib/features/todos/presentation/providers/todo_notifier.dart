@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/todo.dart';
 import 'todo_repository_provider.dart';
 
@@ -17,21 +18,21 @@ class TodoList extends _$TodoList {
   }
 
   /// Adds a new todo item.
-  Future<(bool success, String? errorMessage)> addTodo(String title) async {
+  Future<(bool success, Failure? failure)> addTodo(String title) async {
     final trimmedTitle = title.trim();
     if (trimmedTitle.isEmpty) {
-      return (false, 'Title cannot be empty');
+      return (false, ValidationFailure('Title cannot be empty'));
     }
     return await ref.read(todoRepositoryProvider).add(title: trimmedTitle);
   }
 
   /// Toggles the completion status of a todo item.
-  Future<(bool success, String? errorMessage)> toggleTodo(int id) async {
+  Future<(bool success, Failure? failure)> toggleTodo(int id) async {
     return await ref.read(todoRepositoryProvider).toggleCompleted(id: id);
   }
 
   /// Deletes a todo item.
-  Future<(bool success, String? errorMessage)> deleteTodo(int id) async {
+  Future<(bool success, Failure? failure)> deleteTodo(int id) async {
     return await ref.read(todoRepositoryProvider).delete(id: id);
   }
 }

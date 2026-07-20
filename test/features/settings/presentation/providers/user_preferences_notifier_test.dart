@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'package:flutter_riverpod_boilerplate/core/errors/failure.dart';
 import 'package:flutter_riverpod_boilerplate/features/settings/domain/entities/user_preferences.dart';
 import 'package:flutter_riverpod_boilerplate/features/settings/domain/repositories/user_preferences_repository.dart';
 import 'package:flutter_riverpod_boilerplate/features/settings/presentation/providers/user_preferences_notifier.dart';
@@ -112,12 +113,12 @@ void main() {
       container.listen(userPreferencesProvider, (_, _) {});
       await container.read(userPreferencesProvider.future);
 
-      final (success, error) = await container
+      final (success, failure) = await container
           .read(userPreferencesProvider.notifier)
           .updateThemeMode(UserThemeMode.dark);
 
       expect(success, isTrue);
-      expect(error, isNull);
+      expect(failure, isNull);
       verify(() => mockRepo.updateThemeMode(UserThemeMode.dark)).called(1);
     });
 
@@ -132,12 +133,12 @@ void main() {
         container.listen(userPreferencesProvider, (_, _) {});
         await container.read(userPreferencesProvider.future);
 
-        final (success, error) = await container
+        final (success, failure) = await container
             .read(userPreferencesProvider.notifier)
             .updateNotificationsEnabled(false);
 
         expect(success, isTrue);
-        expect(error, isNull);
+        expect(failure, isNull);
         verify(() => mockRepo.updateNotificationsEnabled(false)).called(1);
       },
     );
@@ -147,18 +148,19 @@ void main() {
       () async {
         when(
           () => mockRepo.updateThemeMode(UserThemeMode.light),
-        ).thenAnswer((_) async => (false, 'Database error'));
+        ).thenAnswer((_) async => (false, DatabaseFailure('Database error')));
 
         container = _makeContainer(mockRepo);
         container.listen(userPreferencesProvider, (_, _) {});
         await container.read(userPreferencesProvider.future);
 
-        final (success, error) = await container
+        final (success, failure) = await container
             .read(userPreferencesProvider.notifier)
             .updateThemeMode(UserThemeMode.light);
 
         expect(success, isFalse);
-        expect(error, 'Database error');
+        expect(failure, isA<DatabaseFailure>());
+        expect(failure?.message, 'Database error');
         expect(
           container.read(userPreferencesProvider),
           isA<AsyncData<UserPreferences>>(),

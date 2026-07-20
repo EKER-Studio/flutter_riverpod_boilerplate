@@ -1,3 +1,4 @@
+import '../../../../core/errors/failure.dart';
 import '../entities/user_preferences.dart';
 
 /// Repository interface for managing user preferences.
@@ -9,12 +10,12 @@ abstract class UserPreferencesRepository {
   Future<UserPreferences> get();
 
   /// Updates the theme mode.
-  Future<(bool success, String? errorMessage)> updateThemeMode(
+  Future<(bool success, Failure? failure)> updateThemeMode(
     UserThemeMode themeMode,
   );
 
   /// Updates whether notifications are enabled.
-  Future<(bool success, String? errorMessage)> updateNotificationsEnabled(
+  Future<(bool success, Failure? failure)> updateNotificationsEnabled(
     bool isEnabled,
   );
 }

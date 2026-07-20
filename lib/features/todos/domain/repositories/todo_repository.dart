@@ -1,3 +1,4 @@
+import '../../../../core/errors/failure.dart';
 import '../entities/todo.dart';
 
 /// Repository interface for managing todo items.
@@ -12,13 +13,11 @@ abstract class TodoRepository {
   Future<List<Todo>> getAll();
 
   /// Adds a new todo item with the given title.
-  Future<(bool success, String? errorMessage)> add({required String title});
+  Future<(bool success, Failure? failure)> add({required String title});
 
   /// Toggles the completion status of a todo item.
-  Future<(bool success, String? errorMessage)> toggleCompleted({
-    required int id,
-  });
+  Future<(bool success, Failure? failure)> toggleCompleted({required int id});
 
   /// Deletes a todo item by its ID.
-  Future<(bool success, String? errorMessage)> delete({required int id});
+  Future<(bool success, Failure? failure)> delete({required int id});
 }

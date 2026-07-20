@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/user_preferences.dart';
 import '../providers/user_preferences_notifier.dart';
 
@@ -30,7 +31,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  error.toString(),
+                  error is Failure ? error.message : error.toString(),
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -74,13 +75,15 @@ class SettingsScreen extends ConsumerWidget {
               secondary: const Icon(Icons.notifications_outlined),
               value: preferences.isNotificationsEnabled,
               onChanged: (value) async {
-                final (success, error) = await ref
+                final (success, failure) = await ref
                     .read(userPreferencesProvider.notifier)
                     .updateNotificationsEnabled(value);
                 if (!success && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(error ?? 'Failed to update preferences'),
+                      content: Text(
+                        failure?.message ?? 'Failed to update preferences',
+                      ),
                     ),
                   );
                 }
@@ -97,12 +100,14 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     UserThemeMode value,
   ) async {
-    final (success, error) = await ref
+    final (success, failure) = await ref
         .read(userPreferencesProvider.notifier)
         .updateThemeMode(value);
     if (!success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error ?? 'Failed to update theme mode')),
+        SnackBar(
+          content: Text(failure?.message ?? 'Failed to update theme mode'),
+        ),
       );
     }
   }

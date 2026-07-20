@@ -1,5 +1,6 @@
 import 'package:isar_community/isar.dart';
 
+import '../../../../core/errors/failure.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/repositories/todo_repository.dart';
 import '../mappers/todo_mapper.dart';
@@ -18,29 +19,39 @@ class TodoRepositoryImpl implements TodoRepository {
         .where()
         .sortByCreatedAtDesc()
         .watch(fireImmediately: true)
-        .map((models) => models.map((m) => m.toEntity()).toList());
+        .map((models) => models.map((m) => m.toEntity()).toList())
+        .handleError((Object error, StackTrace stack) {
+          throw DatabaseFailure('Failed to watch todos: ${error.toString()}');
+        });
   }
 
   @override
   Stream<Todo?> watchById(int id) {
     return _isar.todoModels
         .watchObject(id, fireImmediately: true)
-        .map((model) => model?.toEntity());
+        .map((model) => model?.toEntity())
+        .handleError((Object error, StackTrace stack) {
+          throw DatabaseFailure(
+            'Failed to watch todo $id: ${error.toString()}',
+          );
+        });
   }
 
   @override
   Future<List<Todo>> getAll() async {
-    final models = await _isar.todoModels
-        .where()
-        .sortByCreatedAtDesc()
-        .findAll();
-    return models.map((m) => m.toEntity()).toList();
+    try {
+      final models = await _isar.todoModels
+          .where()
+          .sortByCreatedAtDesc()
+          .findAll();
+      return models.map((m) => m.toEntity()).toList();
+    } catch (e) {
+      throw DatabaseFailure('Failed to load todos: ${e.toString()}');
+    }
   }
 
   @override
-  Future<(bool success, String? errorMessage)> add({
-    required String title,
-  }) async {
+  Future<(bool success, Failure? failure)> add({required String title}) async {
     try {
       final model = TodoModel()
         ..title = title.trim()
@@ -50,13 +61,15 @@ class TodoRepositoryImpl implements TodoRepository {
         await _isar.todoModels.put(model);
       });
       return (true, null);
+    } on IsarError catch (e) {
+      return (false, DatabaseFailure(e.message));
     } catch (e) {
-      return (false, e.toString());
+      return (false, DatabaseFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
   @override
-  Future<(bool success, String? errorMessage)> toggleCompleted({
+  Future<(bool success, Failure? failure)> toggleCompleted({
     required int id,
   }) async {
     try {
@@ -72,23 +85,27 @@ class TodoRepositoryImpl implements TodoRepository {
         await _isar.todoModels.put(model);
       });
       if (!found) {
-        return (false, 'Todo not found');
+        return (false, NotFoundFailure('Todo not found'));
       }
       return (true, null);
+    } on IsarError catch (e) {
+      return (false, DatabaseFailure(e.message));
     } catch (e) {
-      return (false, e.toString());
+      return (false, DatabaseFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
   @override
-  Future<(bool success, String? errorMessage)> delete({required int id}) async {
+  Future<(bool success, Failure? failure)> delete({required int id}) async {
     try {
       await _isar.writeTxn(() async {
         await _isar.todoModels.delete(id);
       });
       return (true, null);
+    } on IsarError catch (e) {
+      return (false, DatabaseFailure(e.message));
     } catch (e) {
-      return (false, e.toString());
+      return (false, DatabaseFailure('Unexpected error: ${e.toString()}'));
     }
   }
 }

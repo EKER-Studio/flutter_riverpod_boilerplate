@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod_boilerplate/core/errors/failure.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/domain/entities/todo.dart';
 import 'package:flutter_riverpod_boilerplate/features/todos/domain/repositories/todo_repository.dart';
 
@@ -58,9 +59,7 @@ class FakeTodoRepository implements TodoRepository {
   }
 
   @override
-  Future<(bool success, String? errorMessage)> add({
-    required String title,
-  }) async {
+  Future<(bool success, Failure? failure)> add({required String title}) async {
     _todos.insert(
       0,
       Todo(
@@ -75,12 +74,12 @@ class FakeTodoRepository implements TodoRepository {
   }
 
   @override
-  Future<(bool success, String? errorMessage)> toggleCompleted({
+  Future<(bool success, Failure? failure)> toggleCompleted({
     required int id,
   }) async {
     final index = _todos.indexWhere((todo) => todo.id == id);
     if (index == -1) {
-      return (false, 'Todo with id $id not found');
+      return (false, NotFoundFailure('Todo with id $id not found'));
     }
 
     final todo = _todos[index];
@@ -90,7 +89,7 @@ class FakeTodoRepository implements TodoRepository {
   }
 
   @override
-  Future<(bool success, String? errorMessage)> delete({required int id}) async {
+  Future<(bool success, Failure? failure)> delete({required int id}) async {
     _todos.removeWhere((todo) => todo.id == id);
     _emit();
     return (true, null);
