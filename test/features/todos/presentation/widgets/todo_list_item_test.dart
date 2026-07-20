@@ -22,7 +22,7 @@ void main() {
     );
 
     expect(find.text('Test Todo'), findsOneWidget);
-    expect(find.text('01.01.2024 12:00'), findsOneWidget);
+    expect(find.text('2024-01-01 12:00'), findsOneWidget);
   });
 
   testWidgets('TodoListItem calls onToggle when checkbox is tapped', (

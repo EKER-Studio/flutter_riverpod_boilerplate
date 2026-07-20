@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../domain/entities/todo.dart';
 import '../screens/todo_screen_detail.dart';
@@ -60,19 +61,14 @@ class TodoListItem extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          _formatDate(todo.createdAt),
+          _dateFormat.format(todo.createdAt),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ),
     );
   }
-
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final year = date.year;
-    final hour = date.hour.toString().padLeft(2, '0');
-    final minute = date.minute.toString().padLeft(2, '0');
-    return '$day.$month.$year $hour:$minute';
-  }
 }
+
+/// Shared date format for displaying [Todo.createdAt], kept consistent with
+/// [TodoDetailScreen].
+final _dateFormat = DateFormat('yyyy-MM-dd HH:mm');
