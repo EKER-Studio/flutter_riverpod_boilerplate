@@ -15,7 +15,7 @@ class App extends ConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider).value;
 
     return MaterialApp(
-      title: 'Flutter Riverpod Boilerplate',
+      title: 'Flutter Blueprint',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
