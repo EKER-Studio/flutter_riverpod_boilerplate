@@ -34,7 +34,7 @@ class TodoDetailScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  error is Failure ? error.message : error.toString(),
+                  error is Failure ? error.userMessage : error.toString(),
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),

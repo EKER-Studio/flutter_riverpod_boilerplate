@@ -31,7 +31,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  error is Failure ? error.message : error.toString(),
+                  error is Failure ? error.userMessage : error.toString(),
                   style: Theme.of(context).textTheme.bodySmall,
                   textAlign: TextAlign.center,
                 ),
@@ -82,7 +82,7 @@ class SettingsScreen extends ConsumerWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        failure?.message ?? 'Failed to update preferences',
+                        failure?.userMessage ?? 'Failed to update preferences',
                       ),
                     ),
                   );
@@ -106,7 +106,7 @@ class SettingsScreen extends ConsumerWidget {
     if (!success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(failure?.message ?? 'Failed to update theme mode'),
+          content: Text(failure?.userMessage ?? 'Failed to update theme mode'),
         ),
       );
     }

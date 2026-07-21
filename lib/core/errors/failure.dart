@@ -39,3 +39,22 @@ class UnknownFailure extends Failure {
   /// Creates an [UnknownFailure] with the given [message].
   const UnknownFailure(super.message);
 }
+
+/// Maps each [Failure] to text that is safe to show directly to end users.
+///
+/// [Failure.message] may contain raw exception text (useful for logs/crash
+/// reports) — this extension hides that behind a stable, friendly string per
+/// failure category. [ValidationFailure] is the one exception: validation
+/// messages are already written to be user-facing, so they pass through.
+extension FailureUserMessage on Failure {
+  /// A human-readable message safe to display in UI.
+  String get userMessage => switch (this) {
+    ValidationFailure(:final message) => message,
+    NotFoundFailure() => 'This item no longer exists.',
+    DatabaseFailure() =>
+      'Something went wrong while saving your data. Please try again.',
+    NetworkFailure() =>
+      'Network error. Please check your connection and try again.',
+    UnknownFailure() => 'Something went wrong. Please try again.',
+  };
+}
