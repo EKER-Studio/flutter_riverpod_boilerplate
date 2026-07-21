@@ -51,7 +51,10 @@ class TodoListItem extends StatelessWidget {
           label: todo.isCompleted
               ? 'Mark "${todo.title}" as not done'
               : 'Mark "${todo.title}" as done',
-          child: Checkbox(value: todo.isCompleted, onChanged: (_) => onToggle()),
+          child: Checkbox(
+            value: todo.isCompleted,
+            onChanged: (_) => onToggle(),
+          ),
         ),
         title: Text(
           todo.title,
